@@ -27,18 +27,37 @@ SETDCOLOR	TAY
 			.EM
 *--------------------------------------
 * X in X / Y in Y
-PLOT		>FINDY
+PLOT
+			LDA HTAB_LO,Y		;Find the low byte of the row address
+			STA SCRN_LO 
+			LDA HTAB_HI,Y		;Find the high byte of the row address
+			STA SCRN_HI
 PLOT_S		LDY MBOFFSET,X		;Find what byte if any in MAIN we are working in
 			BMI AUX				;If pixel has no bits in MAIN memory - go to aux routine
+
+			PHX
+			PHA
+			LDA XMOD7,X
+			TAX
+			PLA
+
 			STA PAGE2_OFF		;Map $2000 to MAIN memory
+
 			LDA (SCRN_LO),Y		;Load screen data
 			AND MAINAND,X		;Erase pixel bits
 ORMAIN		ORA MAINGR,X		;Draw coloured bits
 			STA (SCRN_LO),Y		;Write back to screen
-
+			PLX
 AUX			LDY ABOFFSET,X 		;Find what byte if any in AUX we are working in
 			BMI PLOTEND			;If no part of the pixel is in AUX - end the program
+
+			PHA
+			LDA XMOD7,X
+			TAX
+			PLA
+
 			STA PAGE2_ON		;Map $2000 to AUX memory
+
 			LDA (SCRN_LO),Y		;Load screen data
 			AND AUXAND,X		;Erase pixel bits
 ORAUX		ORA AUXGR,X			;Draw coloured bits

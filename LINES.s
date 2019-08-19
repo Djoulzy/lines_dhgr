@@ -7,8 +7,7 @@ AUTO 4,1
             .OP	65C02
 *--------------------------------------
 			.INB /DEV/LINES.DHGR/DHGR.OFFSET.S
-			.INB /DEV/LINES.DHGR/DHGR.MAIN.S
-			.INB /DEV/LINES.DHGR/DHGR.AUX.S
+			.INB /DEV/LINES.DHGR/DHGR.TABLES.S
             .INB /DEV/LINES.DHGR/MEM.S
 			.INB /DEV/LINES.DHGR/DHGR.INIT.S
 			.INB /DEV/LINES.DHGR/DHGR.PLOT.S
@@ -43,8 +42,12 @@ RUN
 *            >CORNER #$03,#$BC,#$01
 
             JSR VERTLINE
-            JSR HORIZLINE
+*            JSR HORIZLINE
 
+            LDX #$09
+            LDA XMOD7,X
+            TAX
+            LDA MAINMG,X
             BRK
 *--------------------------------------
 MAN
